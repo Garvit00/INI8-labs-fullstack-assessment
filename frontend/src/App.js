@@ -57,6 +57,10 @@ function App() {
     }
   };
 
+  const handleView = (id) => {
+  window.open(`${API_BASE}/documents/view/${id}`, "_blank");
+};
+
   const handleDownload = (id) => {
     // open download in new tab (browser will prompt)
     if(!window.confirm("Do you want to download this document?")) return;
@@ -96,23 +100,24 @@ function App() {
       {docs.length === 0 ? (
         <p>No documents yet.</p>
       ) : (
-        <table border="2" cellPadding="8" style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <table className='table' cellPadding="8">
           <thead>
-            <tr>
-              <th>Filename</th>
-              <th>Size (KB)</th>
-              <th>Uploaded At</th>
-              <th>Actions</th>
+            <tr className='table-main' style={{backgroundColor: "rgb(129, 127, 127)"}}>
+              <th style={{ border: "2px solid #333" }}>Filename</th>
+              <th style={{ border: "2px solid #333" }}>Size(kB)</th>
+              <th style={{ border: "2px solid #333" }}>Uploaded At</th>
+              <th style={{ border: "2px solid #333" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {docs.map(d => (
               <tr key={d.id}>
-                <td>{d.filename}</td>
-                <td>{Math.round((d.filesize || 0) / 1024)}</td>
-                <td>{new Date(d.created_at).toLocaleString()}</td>
-                <td>
-                  <button className='download' onClick={() => handleDownload(d.id)}>Download</button>
+                <td style={{ border: "1.5px solid #333" }}>{d.filename}</td>
+                <td style={{ border: "1.5px solid #333" }}>{Math.round((d.filesize || 0) / 1024)}</td>
+                <td style={{ border: "1.5px solid #333" }}>{new Date(d.created_at).toLocaleString()}</td>
+                <td style={{ border: "1.5px solid #333" }}>
+                  <button className='view' onClick={() => handleView(d.id)}>View</button><br></br>
+                  <button className='download' onClick={() => handleDownload(d.id)}>Download</button><br></br>
                   <button className='delete'  onClick={() => handleDelete(d.id)}>Delete</button>
                 </td>
               </tr>

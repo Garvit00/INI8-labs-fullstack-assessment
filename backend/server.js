@@ -96,7 +96,31 @@ app.get('/documents', async (req, res) => {
   }
 });
 
-// GET /documents/:id  (download)
+//GET /documents/view/:id (view file)
+
+app.get('/documents/view/:id', async(req, res) => {
+  try{
+    const id = Number(req.params.id);
+    const doc = await db.get(`SELECT * FROM documents WHERE id = ?`, id);
+
+    if (!doc) return res.status(404).json({ error: 'file Not found' });
+
+    const filePath = doc.filepath;
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'File missing on server' });
+    }
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline'); // view in browser
+    fs.createReadStream(filePath).pipe(res);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /documents/:id  (download file)
 app.get('/documents/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
